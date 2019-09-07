@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: foo
+  name: foo-script
+data:
+  app.py: |
+          #!/usr/local/bin/python
+          from flask import Flask
+          import requests
+          app = Flask(__name__)
+
+          @app.route('/version')
+          def version():
+              r = requests.get("http://bar:5000/version")
+              return r.content
+
+          if __name__ == '__main__':
+            app.run()
+

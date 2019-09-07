@@ -1,0 +1,51 @@
+--- 
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata: 
+  labels: 
+    app: bar
+    version: v1
+  name: bar-v1
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app:  bar
+      version: v1
+  strategy: 
+    type: RollingUpdate
+  template: 
+    metadata: 
+      labels: 
+        app:  bar
+        version: v1
+    spec: 
+      containers: 
+        - image: python
+          imagePullPolicy: Always
+          name:  bar
+          ports: 
+            - containerPort: 5000
+          command:
+            - "/bin/sh"
+          args:
+            - "-c"
+            - |
+              set -xe
+              pip install flask
+              /app/app.py
+              
+          env:
+            - name: Version
+              value: v1
+          
+          volumeMounts:
+            - name: app
+              mountPath: /app
+      
+      volumes:
+        - name: app
+          configMap:
+            defaultMode: 0755
+            name:  bar-script
+

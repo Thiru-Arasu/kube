@@ -1,0 +1,13 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: foo
+  labels:
+    app: foo
+spec:
+  selector:
+    app: foo
+  ports:
+  - name: http
+    port: 5000

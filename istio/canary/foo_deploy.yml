@@ -1,0 +1,47 @@
+--- 
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata: 
+  labels: 
+    app: foo
+    version: v0
+  name: foo
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: foo
+      version: v0
+  strategy: 
+    type: RollingUpdate
+  template: 
+    metadata: 
+      labels: 
+        app: foo
+        version: v0
+    spec: 
+      containers: 
+        - image: python
+          imagePullPolicy: Always
+          name: foo
+          ports: 
+            - containerPort: 5000
+          command:
+            - "/bin/sh"
+          args:
+            - "-c"
+            - |
+              set -xe
+              pip install flask requests
+              /app/app.py
+          
+          volumeMounts:
+            - name: app
+              mountPath: /app
+      
+      volumes:
+        - name: app
+          configMap:
+            defaultMode: 0755
+            name: foo-script
+
